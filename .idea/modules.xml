@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/MD5Changer.iml" filepath="$PROJECT_DIR$/MD5Changer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MD5ChangerJar/MD5ChangerJar.iml" filepath="$PROJECT_DIR$/MD5ChangerJar/MD5ChangerJar.iml" />
+    </modules>
+  </component>
+</project>
