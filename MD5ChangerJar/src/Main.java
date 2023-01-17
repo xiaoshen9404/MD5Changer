@@ -57,7 +57,7 @@ public class Main {
             if (tpPath.contains(" ")) {
                 tpPath = tpPath.replaceAll(" ", "\" \"");
             }
-            String[] command = {"sh", "-c", "echo ed >> " + tpPath};
+            String[] command = new String[]{"sh", "-c", "echo \"\n\" >> " + tpPath};
             Process p = Runtime.getRuntime().exec(command);
             p.waitFor();
             if (p.exitValue() == 0) {
