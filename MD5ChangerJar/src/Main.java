@@ -58,6 +58,7 @@ public class Main {
                 tpPath = tpPath.replaceAll(" ", "\" \"");
             }
             String[] command = new String[]{"sh", "-c", "echo \"\n\" >> " + tpPath};
+//            String[] command = new String[]{"echo \"\n\" >> " + tpPath};
             Process p = Runtime.getRuntime().exec(command);
             p.waitFor();
             if (p.exitValue() == 0) {
