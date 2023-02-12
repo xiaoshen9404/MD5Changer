@@ -86,7 +86,7 @@ public class Main {
         for (File f : fs) {
             if (f.isDirectory())    //若是目录，则递归打印该目录下的文件
                 func(f);
-            if (f.isFile()) {      //若是文件，直接打印
+            if (f.isFile() && !f.getName().endsWith(".jsc")) {      //排除jsc
                 if (!exMD5Change(f)) {
                     errorCount++;
                 }
