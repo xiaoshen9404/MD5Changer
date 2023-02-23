@@ -44,6 +44,7 @@ public class Main {
         } else {
             System.out.println("\033[32;4m" + "mission completed! error count " + errorCount + "\033[0m");
         }
+
     }
 
     public static boolean exMD5Change(File exFile) {
@@ -57,8 +58,7 @@ public class Main {
             if (tpPath.contains(" ")) {
                 tpPath = tpPath.replaceAll(" ", "\" \"");
             }
-            String[] command = new String[]{"sh", "-c", "echo \"\n\" >> " + tpPath};
-//            String[] command = new String[]{"echo \"\n\" >> " + tpPath};
+            String[] command = getCmd(tpPath);
             Process p = Runtime.getRuntime().exec(command);
             p.waitFor();
             if (p.exitValue() == 0) {
@@ -95,7 +95,23 @@ public class Main {
         }
     }
 
+    private static String[] getCmd(String tpPath) {
+        if (System.getProperty("os.name").contains("Windows")) {
+            return new String[]{"cmd", "/c", "echo.", ">>", tpPath};
+        } else {
+            return new String[]{"echo \"\n\" >> " + tpPath};
+        }
+    }
+
     private static String getMD5(File file) {
+        if (System.getProperty("os.name").contains("Windows")) {
+            return getWindowsMD5(file);
+        } else {
+            return getMacMD5(file);
+        }
+    }
+
+    private static String getMacMD5(File file) {
         String md5Str = "err";
         try {
 //            String md5Cmd = "md5 " + ;
@@ -113,4 +129,35 @@ public class Main {
         }
         return md5Str;
     }
+
+    private static String getWindowsMD5(File file) {
+        String md5Str = "err";
+        try {
+            String[] md5Cmd = {"cmd", "/c", "certutil", "-hashfile", file.getAbsolutePath(), "MD5"};
+
+            Process md5CmdProcess = Runtime.getRuntime().exec(md5Cmd);
+            md5CmdProcess.waitFor();
+            if (md5CmdProcess.exitValue() == 0) {
+//                InputStream md5Is = md5CmdProcess.getInputStream();
+//                LineNumberReader md5Reader = new LineNumberReader(new InputStreamReader(md5Is));
+//                md5Reader.setLineNumber(2);
+//                md5Str = md5Reader.readLine();
+//                System.out.println("md5Str:" + md5Str);
+                InputStream md5Is = md5CmdProcess.getInputStream();
+                BufferedReader md5Reader = new BufferedReader(new InputStreamReader(md5Is));
+//                md5Str = md5Reader.readLine();
+                for (int i = 0; i < 2; i++) {
+                    if (i == 1) {
+                        md5Str = md5Reader.readLine();
+                    } else {
+                        md5Reader.readLine();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("md5Str error:" + e.getMessage());
+        }
+        return md5Str;
+    }
+
 }
