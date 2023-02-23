@@ -4,6 +4,7 @@ import java.io.*;
 
 public class Main {
     static int errorCount = 0;
+    static String osName = System.getProperty("os.name");
 
     public static void main(String[] args) {
         errorCount = 0;
@@ -96,7 +97,7 @@ public class Main {
     }
 
     private static String[] getCmd(String tpPath) {
-        if (System.getProperty("os.name").contains("Windows")) {
+        if (osName.contains("Windows")) {
             return new String[]{"cmd", "/c", "echo.", ">>", tpPath};
         } else {
             return new String[]{"echo \"\n\" >> " + tpPath};
@@ -104,7 +105,7 @@ public class Main {
     }
 
     private static String getMD5(File file) {
-        if (System.getProperty("os.name").contains("Windows")) {
+        if (osName.contains("Windows")) {
             return getWindowsMD5(file);
         } else {
             return getMacMD5(file);
