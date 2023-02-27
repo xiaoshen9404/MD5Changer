@@ -55,11 +55,8 @@ public class Main {
         try {
             stringBuffer.append("\n   oldMD5=");
             stringBuffer.append(oldMD5 = getMD5(exFile));
-            String tpPath = exFile.getAbsolutePath();
-            if (tpPath.contains(" ")) {
-                tpPath = tpPath.replaceAll(" ", "\" \"");
-            }
-            String[] command = getCmd(tpPath);
+
+            String[] command = getCmd(exFile);
             Process p = Runtime.getRuntime().exec(command);
             p.waitFor();
             if (p.exitValue() == 0) {
@@ -96,7 +93,8 @@ public class Main {
         }
     }
 
-    private static String[] getCmd(String tpPath) {
+    private static String[] getCmd(File exFile) {
+        String tpPath = repSpaces(exFile.getAbsolutePath());
         if (osName.contains("Windows")) {
             return new String[]{"cmd", "/c", "echo.", ">>", tpPath};
         } else {
@@ -104,19 +102,33 @@ public class Main {
         }
     }
 
-    private static String getMD5(File file) {
+    private static String repSpaces(String path) {
         if (osName.contains("Windows")) {
-            return getWindowsMD5(file);
+            path = "\"" + path + "\"";
         } else {
-            return getMacMD5(file);
+            if (path.contains(" ")) {
+                path = path.replaceAll(" ", "\" \"");
+            }
+        }
+        return path;
+    }
+
+    private static String getMD5(File file) {
+
+        String path = repSpaces(file.getAbsolutePath());
+
+        if (osName.contains("Windows")) {
+            return getWindowsMD5(path);
+        } else {
+            return getMacMD5(path);
         }
     }
 
-    private static String getMacMD5(File file) {
+    private static String getMacMD5(String filePath) {
         String md5Str = "err";
         try {
 //            String md5Cmd = "md5 " + ;
-            String[] md5Cmd = {"md5", file.getAbsolutePath()};
+            String[] md5Cmd = {"md5", filePath};
 
             Process md5CmdProcess = Runtime.getRuntime().exec(md5Cmd);
             md5CmdProcess.waitFor();
@@ -131,10 +143,10 @@ public class Main {
         return md5Str;
     }
 
-    private static String getWindowsMD5(File file) {
+    private static String getWindowsMD5(String filePath) {
         String md5Str = "err";
         try {
-            String[] md5Cmd = {"cmd", "/c", "certutil", "-hashfile", file.getAbsolutePath(), "MD5"};
+            String[] md5Cmd = {"cmd", "/c", "certutil", "-hashfile", filePath, "MD5"};
 
             Process md5CmdProcess = Runtime.getRuntime().exec(md5Cmd);
             md5CmdProcess.waitFor();
